@@ -3,7 +3,10 @@ package au
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"log"
+	"os"
 	"time"
 )
 
@@ -44,4 +47,47 @@ func AuJwtEncode(comment, machine_no, secret string, d int) ([]byte, error) {
 		ExpireDate: time.Unix(expire_unix, 0).Format("2006-01-02 15:04:05"),
 		Token:      base64.StdEncoding.EncodeToString([]byte(jwt)),
 	})
+}
+
+func AuJwtValid(jwt_token, secret string) bool {
+	token, err := jwt.ParseWithClaims(jwt_token, &au_jwt{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method")
+		}
+		return []byte(secret), nil
+	})
+	if err != nil {
+		log.Printf("<ERR> [lic error] jwt parse error %s\n", err.Error())
+		return false
+	}
+	if _, ok := token.Claims.(*au_jwt); ok && token.Valid {
+		return true
+	} else {
+		log.Println("<ERR> [lic error] jwt is not valid %s\n")
+		return false
+	}
+}
+
+func AuJwtValidFile(lic_path, secret string) bool {
+	file, err := os.Open(lic_path)
+	if err != nil {
+		log.Printf("<ERR> [lic error] open %s failed.\n", lic_path)
+		return false
+	}
+	defer file.Close()
+	decoder := json.NewDecoder(file)
+	au_lic := &au_jwt_lic{}
+	err = decoder.Decode(au_lic)
+	if err != nil {
+		log.Printf("<ERR> [lic error] parse %s failed. \n", lic_path)
+		return false
+	}
+	jwt_token, err := base64.StdEncoding.DecodeString(au_lic.Token)
+	if err != nil {
+		log.Println("<ERR> [lic error] jwt token decode base64 failed. \n")
+		return false
+	}
+
+	return AuJwtValid(string(jwt_token), secret)
+
 }
