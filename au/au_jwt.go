@@ -35,8 +35,7 @@ func au_jwt_token(machine_no, secret string, d int64) (string, error) {
 	return token.SignedString([]byte(secret))
 }
 
-func AuJwtEncode(comment, machine_no, secret string, d int) ([]byte, error) {
-	expire_unix := time.Now().Add(time.Hour * time.Duration(24*d)).Unix()
+func AuJwtEncode(comment, machine_no, secret string, expire_unix int64) ([]byte, error) {
 	jwt, err := au_jwt_token(machine_no, secret, expire_unix)
 	if err != nil {
 		return nil, err
