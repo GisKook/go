@@ -21,7 +21,7 @@ type au_jwt_lic struct {
 	Token      string `json:"token"`
 }
 
-func au_jwt_token(machine_no, secret string, d int64) (string, error) {
+func au_jwt_token_gen(machine_no, secret string, d int64) (string, error) {
 	claims := au_jwt{
 		machine_no,
 		jwt.StandardClaims{
@@ -36,7 +36,7 @@ func au_jwt_token(machine_no, secret string, d int64) (string, error) {
 }
 
 func AuJwtEncode(comment, machine_no, secret string, expire_unix int64) ([]byte, error) {
-	jwt, err := au_jwt_token(machine_no, secret, expire_unix)
+	jwt, err := au_jwt_token_gen(machine_no, secret, expire_unix)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func AuJwtValid(jwt_token, secret string) bool {
 	if _, ok := token.Claims.(*au_jwt); ok && token.Valid {
 		return true
 	} else {
-		log.Println("<ERR> [lic error] jwt is not valid %s\n")
+		log.Println("<ERR> [lic error] jwt is not valid")
 		return false
 	}
 }
@@ -83,7 +83,7 @@ func AuJwtValidFile(lic_path, secret string) bool {
 	}
 	jwt_token, err := base64.StdEncoding.DecodeString(au_lic.Token)
 	if err != nil {
-		log.Println("<ERR> [lic error] jwt token decode base64 failed. \n")
+		log.Println("<ERR> [lic error] jwt token decode base64 failed.")
 		return false
 	}
 
