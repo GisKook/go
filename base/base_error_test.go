@@ -1,12 +1,12 @@
 package base
 
 import (
+	"errors"
 	"testing"
 )
 
-func TestWhereAmI(t *testing.T) {
-	where := WhereAmI()
-	t.Log(where)
-	where = WhereAmI(2)
-	t.Log(where)
+func TestErrorCheck(t *testing.T) {
+	err := errors.New("I am an error")
+	ErrorCheck(err)
+	//t.Log(where)
 }

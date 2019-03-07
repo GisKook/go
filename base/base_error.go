@@ -11,7 +11,10 @@ import (
 // See: http://www.mailsend-online.com/license2016.php
 //
 // This code may not conform to popular Go coding idioms
-func where_am_i(depthList ...int) string {
+func where_am_i(err error, depthList ...int) string {
+	if err == nil {
+		return ""
+	}
 	var depth int
 	if depthList == nil {
 		depth = 1
@@ -19,11 +22,9 @@ func where_am_i(depthList ...int) string {
 		depth = depthList[0]
 	}
 	function, file, line, _ := runtime.Caller(depth)
-	return fmt.Sprintf("File: %s  Function: %s Line: %d", file, runtime.FuncForPC(function).Name(), line)
+	return fmt.Sprintf("Error %s File: %s  Function: %s Line: %d", err.Error(), file, runtime.FuncForPC(function).Name(), line)
 }
 
 func ErrorCheck(err error) {
-	if err != nil {
-		log.Println(where_am_i())
-	}
+	log.Println(where_am_i(err, 2))
 }
