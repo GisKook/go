@@ -1,17 +1,14 @@
 package crypto
 
 import (
-	"encoding/hex"
+	"log"
 	"testing"
 )
 
-func TestCryptoAesCFBEncrypt(t *testing.T) {
-	key, _ := hex.DecodeString("6368616e676520746869732070617373776f726420746f206120736563726574")
-	plaintext := []byte("exampleplaintextaaa")
+func TestCryptoAesCBCEncrypt(t *testing.T) {
+	key := []byte{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f}
 
-	encrypt, err := CryptoAesCFBEncrypt(plaintext, key)
-	t.Log(encrypt)
-	t.Log(err)
-	plain, err := CryptoAesCFBDecrypt(encrypt, key)
-	t.Log(string(plain))
+	result, _ := CryptoAesCBCEncrypt("hello", key)
+	plaintext, _ := CryptoAesCBCDecrypt(result, key)
+	log.Println(string(plaintext))
 }
