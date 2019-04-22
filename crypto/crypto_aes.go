@@ -15,7 +15,7 @@ func padding(plaintext string) []byte {
 		return []byte(plaintext)
 	}
 
-	length = length/aes.BlockSize + aes.BlockSize
+	length = (length/aes.BlockSize)*aes.BlockSize + aes.BlockSize
 	pad := make([]byte, length)
 	copy(pad, []byte(plaintext))
 
