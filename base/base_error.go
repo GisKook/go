@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"runtime"
+	"runtime/debug"
 )
 
 // Copyright 2016 - by Jim Lawless
@@ -32,4 +33,8 @@ func where_am_i(err error, depthList ...int) string {
 
 func ErrorCheck(err error) {
 	log.Println(where_am_i(err, 2))
+}
+
+func ErrorPrintStack() {
+	debug.PrintStack()
 }
