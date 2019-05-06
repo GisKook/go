@@ -35,6 +35,14 @@ func ErrorCheck(err error) {
 	log.Println(where_am_i(err, 2))
 }
 
+const (
+	UPPER_LEVEL int = 3
+)
+
+func ErrorCheckWithLevel(err error, level int) {
+	log.Println(where_am_i(err, level))
+}
+
 func ErrorPrintStack() {
 	debug.PrintStack()
 }
