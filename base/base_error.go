@@ -35,6 +35,17 @@ func ErrorCheck(err error) {
 	log.Println(where_am_i(err, 2))
 }
 
+func ErrorCheckPlus(err error, extra ...string) {
+	log.Println(where_am_i(err, 2), extra)
+}
+
+func ErrorCheckFatal(err error, extra string) {
+	if err != nil {
+		ErrorCheckWithLevel(err, UPPER_LEVEL)
+		log.Fatal(err.Error(), extra)
+	}
+}
+
 const (
 	UPPER_LEVEL int = 3
 )
