@@ -52,6 +52,7 @@ func MarshalJson(w http.ResponseWriter, v interface{}) error {
 		return err
 	}
 	fmt.Fprint(w, string(data))
+	log.Println(string(data))
 	return nil
 }
 
