@@ -3,9 +3,7 @@ package base
 import (
 	"bytes"
 	"encoding/binary"
-	"strconv"
 	"strings"
-	"time"
 )
 
 func ReadByte(reader *bytes.Reader) byte {
@@ -22,11 +20,10 @@ func ReadBytes(reader *bytes.Reader, length int) []byte {
 }
 
 func ReadWord(reader *bytes.Reader) uint16 {
-	var uint16 word
-	//word_byte := make([]byte, 2)
-	reader.Read([]byte(word))
+	word_byte := make([]byte, 2)
+	reader.Read([]byte(word_byte))
 
-	return binary.BigEndian.Uint16([]byte(word))
+	return binary.BigEndian.Uint16([]byte(word_byte))
 }
 
 func ReadDWord(reader *bytes.Reader) uint32 {
