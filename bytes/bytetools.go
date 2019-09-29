@@ -3,55 +3,67 @@ package base
 import (
 	"bytes"
 	"encoding/binary"
+	"io"
 	"strings"
 )
 
-func ReadByte(reader *bytes.Reader) byte {
-	b, _ := reader.ReadByte()
+func ReadByte(reader io.Reader) byte {
+	b := make([]byte, 1)
+	reader.Read(b)
 
-	return b
+	return b[0]
 }
 
-func ReadBytes(reader *bytes.Reader, length int) []byte {
+func ReadBytes(reader io.Reader, length int) []byte {
 	result := make([]byte, length)
 	reader.Read(result)
 
 	return result
 }
 
-func ReadWord(reader *bytes.Reader) uint16 {
+func ReadWord(reader io.Reader) uint16 {
 	word_byte := make([]byte, 2)
 	reader.Read([]byte(word_byte))
 
 	return binary.BigEndian.Uint16([]byte(word_byte))
 }
 
-func ReadDWord(reader *bytes.Reader) uint32 {
+func ReadDWord(reader io.Reader) uint32 {
 	dword_byte := make([]byte, 4)
 	reader.Read(dword_byte)
 
 	return binary.BigEndian.Uint32(dword_byte)
 }
 
-func ReadDWordL(reader *bytes.Reader) uint32 {
+func ReadDWordL(reader io.Reader) uint32 {
 	dword_byte := make([]byte, 4)
 	reader.Read(dword_byte)
 
 	return binary.LittleEndian.Uint32(dword_byte)
 }
 
-func ReadQuaWord(reader *bytes.Reader) uint64 {
+func ReadQuaWord(reader io.Reader) uint64 {
 	qword_byte := make([]byte, 8)
 	reader.Read(qword_byte)
 
 	return binary.BigEndian.Uint64(qword_byte)
 }
 
-func ReadString(reader *bytes.Reader, length uint8) string {
+func ReadString(reader io.Reader, length uint8) string {
 	string_byte := make([]byte, length)
 	reader.Read(string_byte)
 
 	return string(string_byte)
+}
+
+func ReadBcdString(reader io.Reader, length int) string {
+	string_byte := make([]byte, length)
+	reader.Read(string_byte)
+	result := ""
+	for _, v := range string_byte {
+		result += bcd_table[v]
+	}
+	return result
 }
 
 func WriteByte(writer *bytes.Buffer, b byte) {
