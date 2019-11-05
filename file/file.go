@@ -1,6 +1,9 @@
 package file
 
 import (
+	"crypto/md5"
+	gkbytes "github.com/giskook/go/bytes"
+	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -42,4 +45,19 @@ func GetFileSize(file_path string) (int64, error) {
 
 func GetDir(file string) string {
 	return filepath.Dir(file)
+}
+
+func MD5(file string) (string, error) {
+	f, err := os.Open(file)
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+
+	h := md5.New()
+	if _, err := io.Copy(h, f); err != nil {
+		return "", err
+	}
+
+	return gkbytes.GetBcdString(h.Sum(nil)), nil
 }
